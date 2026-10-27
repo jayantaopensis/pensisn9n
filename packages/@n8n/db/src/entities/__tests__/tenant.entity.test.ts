@@ -23,7 +23,9 @@ describe('Tenant Entity', () => {
 		it('generates a uuid when none is set', () => {
 			const tenant = createTenant();
 			tenant.generateId();
-			expect(tenant.id).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
+			expect(tenant.id).toMatch(
+				/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/,
+			);
 		});
 
 		it('keeps an id that is already set', () => {
@@ -74,7 +76,9 @@ describe('Tenant Entity', () => {
 
 		it.each([-1, 1.5, Number.NaN])('rejects limit <%s>', (limit) => {
 			expect(() => createTenant({ maxUsers: limit }).validate()).toThrow('non-negative integer');
-			expect(() => createTenant({ maxWorkflows: limit }).validate()).toThrow('non-negative integer');
+			expect(() => createTenant({ maxWorkflows: limit }).validate()).toThrow(
+				'non-negative integer',
+			);
 			expect(() => createTenant({ maxExecutionsPerDay: limit }).validate()).toThrow(
 				'non-negative integer',
 			);

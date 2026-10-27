@@ -55,7 +55,10 @@ export class AddTenants1793120000000 implements ReversibleMigration {
 				column('logoUrl').varchar(1024),
 				column('primaryColor').varchar(7),
 				column('secondaryColor').varchar(7),
-				column('status').varchar(16).notNull.default("'active'").withEnumCheck(['active', 'suspended']),
+				column('status')
+					.varchar(16)
+					.notNull.default("'active'")
+					.withEnumCheck(['active', 'suspended']),
 				column('plan').varchar(32).notNull.default("'default'"),
 				column('maxUsers').int.comment('NULL means unlimited'),
 				column('maxWorkflows').int.comment('NULL means unlimited'),
@@ -91,7 +94,9 @@ export class AddTenants1793120000000 implements ReversibleMigration {
 					`ALTER TABLE ${table} ADD CONSTRAINT ${this.foreignKeyName(ctx, tableName)}
 					FOREIGN KEY (${tenantId}) REFERENCES ${escape.tableName('tenant')} (id) NOT VALID`,
 				);
-				await runQuery(`COMMENT ON COLUMN ${table}.${tenantId} IS 'Tenant (school) owning this row'`);
+				await runQuery(
+					`COMMENT ON COLUMN ${table}.${tenantId} IS 'Tenant (school) owning this row'`,
+				);
 			}
 
 			await createIndex(tableName, ['tenantId']);
@@ -117,7 +122,9 @@ export class AddTenants1793120000000 implements ReversibleMigration {
 			// SQLite refuses to drop an indexed column.
 			await dropIndex(tableName, ['tenantId']);
 			if (isPostgres) {
-				await runQuery(`ALTER TABLE ${table} DROP CONSTRAINT ${this.foreignKeyName(ctx, tableName)}`);
+				await runQuery(
+					`ALTER TABLE ${table} DROP CONSTRAINT ${this.foreignKeyName(ctx, tableName)}`,
+				);
 			}
 			await runQuery(`ALTER TABLE ${table} DROP COLUMN ${tenantId}`);
 		}

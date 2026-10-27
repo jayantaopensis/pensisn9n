@@ -1,0 +1,19 @@
+# openSIS n8n: one container behind the CloudPanel reverse proxy.
+# Build the image first with ./build-image.sh, then run: docker compose up -d
+services:
+  n8n:
+    image: ${N8N_IMAGE:-opensis-n8n:latest}
+    container_name: opensis-n8n
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      # Bind to loopback only. The reverse proxy is the single public entry point.
+      - '127.0.0.1:${N8N_PORT:-6700}:${N8N_PORT:-6700}'
+    volumes:
+      - n8n_data:/home/node/.n8n
+    extra_hosts:
+      # Lets the container reach a database that runs on the host itself.
+      - 'host.docker.internal:host-gateway'
+
+volumes:
+  n8n_data:
